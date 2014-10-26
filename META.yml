@@ -1,0 +1,25 @@
+---
+abstract: 'Check that a library is available for FFI'
+author:
+  - 'Graham Ollis <plicease@cpan.org>'
+build_requires:
+  Module::Build: '0.28'
+  Test::More: '0.94'
+configure_requires:
+  Module::Build: '0.28'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: FFI-CheckLib
+requires:
+  FFI::Raw: '0'
+  base: '0'
+  perl: v5.10.0
+resources:
+  bugtracker: https://github.com/plicease/FFI-CheckLib/issues
+  homepage: http://perl.wdlabs.com/FFI-CheckLib
+  repository: git://github.com/plicease/FFI-CheckLib.git
+version: '0.02'

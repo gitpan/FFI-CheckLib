@@ -1,0 +1,54 @@
+{
+   "abstract" : "Check that a library is available for FFI",
+   "author" : [
+      "Graham Ollis <plicease@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "FFI-CheckLib",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Module::Build" : "0.28"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.28"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "FFI::Raw" : "0",
+            "base" : "0",
+            "perl" : "v5.10.0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.94"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/plicease/FFI-CheckLib/issues"
+      },
+      "homepage" : "http://perl.wdlabs.com/FFI-CheckLib",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/plicease/FFI-CheckLib.git",
+         "web" : "https://github.com/plicease/FFI-CheckLib"
+      }
+   },
+   "version" : "0.02"
+}
+
