@@ -18,15 +18,13 @@ my %module_build_args = (
     "Graham Ollis <plicease\@cpan.org>"
   ],
   "dist_name" => "FFI-CheckLib",
-  "dist_version" => "0.02",
+  "dist_version" => "0.03",
   "license" => "perl",
   "module_name" => "FFI::CheckLib",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
-    "FFI::Raw" => 0,
-    "base" => 0,
-    "perl" => "v5.10.0"
+    "perl" => "5.006"
   },
   "script_files" => [],
   "test_requires" => {

@@ -15,11 +15,9 @@ meta-spec:
   version: '1.4'
 name: FFI-CheckLib
 requires:
-  FFI::Raw: '0'
-  base: '0'
-  perl: v5.10.0
+  perl: '5.006'
 resources:
   bugtracker: https://github.com/plicease/FFI-CheckLib/issues
   homepage: http://perl.wdlabs.com/FFI-CheckLib
   repository: git://github.com/plicease/FFI-CheckLib.git
-version: '0.02'
+version: '0.03'

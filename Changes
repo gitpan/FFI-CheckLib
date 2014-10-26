@@ -1,6 +1,12 @@
 Revision history for FFI-CheckLib
 
+0.03      2014-10-26 16:35:22 -0400
+  - use DynaLoader for symbol resolution instead of FFI::Raw
+    thus remove dep on FFI::Raw
+  - add verify option
+
 0.02      2014-10-26 13:18:14 -0400
+  - first release to CPAN
 
 0.01      2014-10-26 11:34:58 -0400
   - initial version

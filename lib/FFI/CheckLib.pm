@@ -2,7 +2,6 @@ package FFI::CheckLib;
 
 use strict;
 use warnings;
-use v5.10;
 use File::Spec;
 use Carp qw( croak );
 use base qw( Exporter );
@@ -10,11 +9,12 @@ use base qw( Exporter );
 our @EXPORT = qw( find_lib assert_lib check_lib check_lib_or_exit );
 
 # ABSTRACT: Check that a library is available for FFI
-our $VERSION = '0.02'; # VERSION
+our $VERSION = '0.03'; # VERSION
 
 
 our $system_path;
-our $os = $ENV{FFI_CHECKLIB_TEST_OS} // $^O;
+our $os = $ENV{FFI_CHECKLIB_TEST_OS} || $^O;
+our $dyna_loader = 'DynaLoader';
 
 if($os eq 'MSWin32')
 {
@@ -64,9 +64,9 @@ sub find_lib
   croak "find_lib requires lib argument" unless defined $args{lib};
 
   # make arguments be lists.
-  foreach my $arg (qw( lib libpath symbol ))
+  foreach my $arg (qw( lib libpath symbol verify ))
   {
-    next if ref $args{$arg};
+    next if ref $args{$arg} eq 'ARRAY';
     if(defined $args{$arg})
     {
       $args{$arg} = [ $args{$arg} ];
@@ -105,16 +105,27 @@ sub find_lib
     # finding .dlls from .a files that may
     # be worth adopting.
     
+    midloop:
     foreach my $lib (@maybe)
     {
-      next unless delete $missing{$lib->[0]};
+      next unless $missing{$lib->[0]};
+      
+      foreach my $verify (@{ $args{verify} })
+      {
+        next midloop unless $verify->(@$lib);
+      }
+      
+      delete $missing{$lib->[0]};
       
       foreach my $symbol (keys %symbols)
       {
-        next unless eval q{
-          use FFI::Raw;
-          FFI::Raw->new($lib->[1], $symbol, FFI::Raw::void);
-          1;
+        next unless do {
+          require "$dyna_loader.pm";
+          no strict 'refs';
+          my $dll = &{"$dyna_loader\::dl_load_file"}($lib->[1],0);
+          my $ok = &{"$dyna_loader\::dl_find_symbol"}($dll, $symbol) ? 1 : 0;
+          &{"$dyna_loader\::dl_unload_file"}($dll);
+          $ok;
         };
         delete $symbols{$symbol};
       }
@@ -164,11 +175,11 @@ FFI::CheckLib - Check that a library is available for FFI
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
-  use FFI::CheckLib::FFI;
+  use FFI::CheckLib;
   
   check_lib_or_exit( lib => 'jpeg', symbol => 'jinit_memory_mgr' );
   check_lib_or_exit( lib => [ 'iconv', 'jpeg' ] );
@@ -185,6 +196,11 @@ It is modeled heavily on L<Devel::CheckLib>, but will find dynamic libraries
 even when development packages are not installed.  It also provides a 
 L<find_lib|FFI::CheckLib#find_lib> function that will return the full path to
 the found dynamic library, which can be feed directly into L<FFI::Raw>.
+
+Although intended mainly for FFI modules via L<FFI::Raw> and similar, this module
+does not actually use any FFI to do its detection and probing.  This module does
+not have any non-core dependencies other than L<Module::Build> on Perl 5.20 and
+more recent.
 
 =head1 FUNCTIONS
 
@@ -207,6 +223,43 @@ A string or array of additional paths to search for libraries.
 =head3 symbol
 
 A string or a list of symbol names that must be found.
+
+=head3 verify
+
+A code reference used to verify a library really is the one that you want.  It 
+should take two arguments, which is the name of the library and the full path to the
+library pathname.  It should return true if it is acceptable, and false otherwise.  
+You can use this in conjunction with L<FFI::Raw> to determine if it is going to meet
+your needs.  Example:
+
+ use FFI::CheckLib;
+ use FFI::Raw;
+ 
+ my($lib) = find_lib(
+   name => 'foo',
+   verify => sub {
+     my($name, $libpath) = @_;
+     
+     my $new = FFI::Raw->new(
+       $lib, 'foo_new',
+       FFI::Raw::ptr,
+     );
+     
+     my $delete = FFI::Raw->new(
+       $lib, 'foo_delete',
+       FFI::Raw::void,
+       FFI::Raw::ptr,
+     );
+     
+     # return true if new returns
+     # a pointer, not forgetting
+     # to free it on success.
+     my $ptr = $new->call();
+     return 0 unless $ptr;
+     $delete->call();
+     return 1;
+   },
+ );
 
 =head2 assert_lib
 

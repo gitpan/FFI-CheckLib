@@ -1,19 +1,36 @@
 package
-  FFI::Raw;
+  MyDynaLoader;
 
 use strict;
 use warnings;
-use constant void => '::void::';
 
-$INC{'FFI/Raw.pm'} = __FILE__;
+$INC{'MyDynaLoader.pm'} = __FILE__;
 
-sub new
-{
-  my($class, $filename, $symbol, $ret) = @_;
-  my $dll = TestDLL->new($filename);
-  die "not found" unless $dll->has_symbol($symbol);
-  bless {}, $class;
-}
+do {
+  my @libref = ('null');
+
+  sub dl_load_file
+  {
+    my($filename, $flags) = @_;
+    return undef unless -e $filename;
+    my $libref = scalar @libref;
+    @libref[$libref] = TestDLL->new($filename);
+    $libref;
+  }
+
+  sub dl_unload_file
+  {
+    my($libref) = @_;
+    delete $libref[$libref];
+  }
+
+  sub dl_find_symbol
+  {
+    my($libref, $symbol) = @_;
+    my $lib = $libref[$libref];
+    $lib->has_symbol($symbol);
+  }
+};
 
 package
   TestDLL;
@@ -22,10 +39,13 @@ sub new
 {
   my($class, $filename) = @_;
   
-  my $fh;
-  open $fh, '<', $filename;
-  my @list = <$fh>;
-  close $fh;
+  my @list = do {
+    my $fh;
+    open $fh, '<', $filename;
+    my @list = <$fh>;
+    close $fh;
+    @list;
+  };
   
   chomp @list;
   
