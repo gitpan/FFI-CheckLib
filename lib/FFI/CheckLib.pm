@@ -9,7 +9,7 @@ use base qw( Exporter );
 our @EXPORT = qw( find_lib assert_lib check_lib check_lib_or_exit );
 
 # ABSTRACT: Check that a library is available for FFI
-our $VERSION = '0.03'; # VERSION
+our $VERSION = '0.04'; # VERSION
 
 
 our $system_path;
@@ -43,7 +43,7 @@ elsif($os eq 'MSWin32')
 }
 elsif($os eq 'darwin')
 {
-  push @$pattern, qr{^lib(.*?)\.dylib$};
+  push @$pattern, qr{^lib(.*?)\.(?:dylib|bundle)$};
 }
 
 sub _matches
@@ -175,7 +175,7 @@ FFI::CheckLib - Check that a library is available for FFI
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 

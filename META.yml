@@ -5,10 +5,12 @@ author:
 build_requires:
   Module::Build: '0.28'
   Test::More: '0.94'
+  perl: '5.006'
 configure_requires:
   Module::Build: '0.28'
+  perl: '5.006'
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690'
+generated_by: 'Dist::Zilla version 5.029, CPAN::Meta::Converter version 2.143240'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -20,4 +22,4 @@ resources:
   bugtracker: https://github.com/plicease/FFI-CheckLib/issues
   homepage: http://perl.wdlabs.com/FFI-CheckLib
   repository: git://github.com/plicease/FFI-CheckLib.git
-version: '0.03'
+version: '0.04'

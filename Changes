@@ -1,5 +1,9 @@
 Revision history for FFI-CheckLib
 
+0.04      2015-01-02 11:21:59 -0500
+  - works with .bundle files on OS X
+    (previously only with .dylib files)
+
 0.03      2014-10-26 16:35:22 -0400
   - use DynaLoader for symbol resolution instead of FFI::Raw
     thus remove dep on FFI::Raw
